@@ -25,10 +25,9 @@ def pengurangan_mean_value(data,mean,key):
         for j in range(len(data)):
             val += (data[j] - mean[i])**2
         std_dev.append(np.sqrt(val/(len(data)-1)))
-        total_data.append(val)
-    print('total jumlah : \n',total_data)
-    print('standart deviasi : \n',std_dev)
-    print('mean : \n',mean)
+    # print('standart deviasi : \n',std_dev)
+    # print('mean : \n',mean)
+    return (std_dev,mean)
 opendb()
 no = 0
 datas =[]
@@ -121,8 +120,13 @@ for k in range(1,5):
 # print('m contrast :',mean_contrast)
 # print('m energy :',mean_energy)
 # print('m homogeneity :',mean_homogeneity)
-
+cursor.execute('select * from tb_data where status = 2 LIMIT 1')
+uji = cursor.fetchone()
 for i in range(1,5):
     print('target',i)
-    pengurangan_mean_value(data[i]['red1'],mean_red1,'red1')
+    sr1,mr1 = pengurangan_mean_value(data[i]['red1'],mean_red1,'red1')
+    p = (1/(np.sqrt(2*phi))*sr1[i])*eksponen - ((uji[2]-mr1[i]**2)/(2*(sr1[i])**2))
+    print(p)
+
+
 closedb()
