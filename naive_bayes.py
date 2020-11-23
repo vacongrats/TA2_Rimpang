@@ -65,68 +65,71 @@ for j in range(1,5):
         eng.append(i[13])
         homogen.append(i[14])
         target.append(i[15])
-    data[j]={'red1':data_red1,
-            'red2' :data_red2,
-            'red3' :data_red3,
-            'green1' :data_green1,
-            'green2' :data_green2,
-            'green3' :data_green3,
-            'blue1' :data_blue1,
-            'blue2' :data_blue2,
-            'blue3' :data_blue3,
-            'entropy' :ent,
-            'contrast' :contrs,
-            'energy' :eng,
-            'homogeneity' :homogen,
-            'target' : target
+    data[j]={'red1':np.array(data_red1),
+            'red2' :np.array(data_red2),
+            'red3' :np.array(data_red3),
+            'green1' :np.array(data_green1),
+            'green2' :np.array(data_green2),
+            'green3' :np.array(data_green3),
+            'blue1' :np.array(data_blue1),
+            'blue2' :np.array(data_blue2),
+            'blue3' :np.array(data_blue3),
+            'entropy' :np.array(ent),
+            'contrast' :np.array(contrs),
+            'energy' :np.array(eng),
+            'homogeneity' :np.array(homogen),
+            'target' :np.array( target)
             }
-mean_red1 = []
-mean_red2 = []
-mean_red3 = []
-mean_green1 = []
-mean_green2 = []
-mean_green3 = []
-mean_blue1 = []
-mean_blue2 = []
-mean_blue3 = []
-mean_entropy = []
-mean_contrast = []
-mean_energy = []
-mean_homogeneity = []
-for k in range(1,5):
-    mean_red1.append(sum(data[k]['red1'])/len(data[k]['red1']))    
-    mean_red2.append(sum(data[k]['red2'])/len(data[k]['red2']))    
-    mean_red3.append(sum(data[k]['red3'])/len(data[k]['red3']))    
-    mean_green1.append(sum(data[k]['green1'])/len(data[k]['green1']))
-    mean_green2.append(sum(data[k]['green2'])/len(data[k]['green2']))
-    mean_green3.append(sum(data[k]['green3'])/len(data[k]['green3']))
-    mean_blue1.append(sum(data[k]['blue1'])/len(data[k]['blue1']))
-    mean_blue2.append(sum(data[k]['blue2'])/len(data[k]['blue2']))
-    mean_blue3.append(sum(data[k]['blue3'])/len(data[k]['blue3']))
-    mean_entropy.append(sum(data[k]['entropy'])/len(data[k]['entropy']))
-    mean_contrast.append(sum(data[k]['contrast'])/len(data[k]['contrast']))
-    mean_energy.append(sum(data[k]['energy'])/len(data[k]['energy']))
-    mean_homogeneity.append(sum(data[k]['homogeneity'])/len(data[k]['homogeneity']))
-# print('m red1 :',mean_red1)
-# print('m red2 :',mean_red2)
-# print('m red3 :',mean_red3)
-# print('m green1 :',mean_green1)
-# print('m green2 :',mean_green2)
-# print('m green3 :',mean_green3)
-# print('m blue1 :',mean_blue1)
-# print('m blue2 :',mean_blue2)
-# print('m blue3 :',mean_blue3)
-# print('m entropy :',mean_entropy)
-# print('m contrast :',mean_contrast)
-# print('m energy :',mean_energy)
-# print('m homogeneity :',mean_homogeneity)
-cursor.execute('select * from tb_data where status = 2 LIMIT 1')
-uji = cursor.fetchone()
-for i in range(1,5):
-    print('target',i)
-    sr1,mr1 = pengurangan_mean_value(data[i]['red1'],mean_red1,'red1')
-    p = (1/(np.sqrt(2*phi))*sr1[i])*eksponen - ((uji[2]-mr1[i]**2)/(2*(sr1[i])**2))
-    print(p)
+for key,val in data.items():
+    print(val)
+    
+# mean_red1 = []
+# mean_red2 = []
+# mean_red3 = []
+# mean_green1 = []
+# mean_green2 = []
+# mean_green3 = []
+# mean_blue1 = []
+# mean_blue2 = []
+# mean_blue3 = []
+# mean_entropy = []
+# mean_contrast = []
+# mean_energy = []
+# mean_homogeneity = []
+# for k in range(1,5):
+#     mean_red1.append(sum(data[k]['red1'])/len(data[k]['red1']))    
+#     mean_red2.append(sum(data[k]['red2'])/len(data[k]['red2']))    
+#     mean_red3.append(sum(data[k]['red3'])/len(data[k]['red3']))    
+#     mean_green1.append(sum(data[k]['green1'])/len(data[k]['green1']))
+#     mean_green2.append(sum(data[k]['green2'])/len(data[k]['green2']))
+#     mean_green3.append(sum(data[k]['green3'])/len(data[k]['green3']))
+#     mean_blue1.append(sum(data[k]['blue1'])/len(data[k]['blue1']))
+#     mean_blue2.append(sum(data[k]['blue2'])/len(data[k]['blue2']))
+#     mean_blue3.append(sum(data[k]['blue3'])/len(data[k]['blue3']))
+#     mean_entropy.append(sum(data[k]['entropy'])/len(data[k]['entropy']))
+#     mean_contrast.append(sum(data[k]['contrast'])/len(data[k]['contrast']))
+#     mean_energy.append(sum(data[k]['energy'])/len(data[k]['energy']))
+#     mean_homogeneity.append(sum(data[k]['homogeneity'])/len(data[k]['homogeneity']))
+# # print('m red1 :',mean_red1)
+# # print('m red2 :',mean_red2)
+# # print('m red3 :',mean_red3)
+# # print('m green1 :',mean_green1)
+# # print('m green2 :',mean_green2)
+# # print('m green3 :',mean_green3)
+# # print('m blue1 :',mean_blue1)
+# # print('m blue2 :',mean_blue2)
+# # print('m blue3 :',mean_blue3)
+# # print('m entropy :',mean_entropy)
+# # print('m contrast :',mean_contrast)
+# # print('m energy :',mean_energy)
+# # print('m homogeneity :',mean_homogeneity)
+# cursor.execute('select * from tb_data where status = 2 LIMIT 1')
+# uji = cursor.fetchone()
+# for i in range(1,5):
+#     print('target',i)
+#     sr1,mr1 = pengurangan_mean_value(data[i]['red1'],mean_red1,'red1')
+#     p = (1/(np.sqrt(2*phi))*sr1[i])*eksponen - ((uji[2]-mr1[i]**2)/(2*(sr1[i])**2))
+#     print(p)
 
 
 closedb()
