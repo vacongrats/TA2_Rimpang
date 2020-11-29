@@ -116,9 +116,24 @@ def ekstraksi_fitur():
 ##########################################################################################################
 
 
-@app.route('/tampil_data')
+@app.route('/tampil_data',  methods=['GET'])
 def tampil_data():
-    return render_template('tampil_data.html')
+
+    opendb()
+    cursor.execute('select * from tb_data where status = 1')
+    result = []
+    for id_data, nama, red1, red2, red3, green1, green2, green3, blue1, blue2, blue3, entropys, contrasts, energys, homogeneitys, target, status in cursor.fetchall():
+        result.append((id_data, nama, red1, red2, red3, green1, green2, green3, blue1,
+                       blue2, blue3, entropys, contrasts, energys, homogeneitys, target, status))
+    cursor.execute('select * from tb_data where status = 2')
+    res = []
+    for id_data, nama, red1, red2, red3, green1, green2, green3, blue1, blue2, blue3, entropys, contrasts, energys, homogeneitys, target, status in cursor.fetchall():
+        res.append((id_data, nama, red1, red2, red3, green1, green2, green3, blue1,
+                    blue2, blue3, entropys, contrasts, energys, homogeneitys, target, status))
+
+    closedb()
+
+    return render_template('tampil_data.html', result=result, res=res)
 ##########################################################################################################
 
 

@@ -2,23 +2,25 @@ import cv2
 import numpy as np
 from matplotlib import pyplot as plt
 
+
 def persentase(histo):
-    persen=[]
+    persen = []
     for i in range(len(histo)):
-        persen.append((histo[i]/sum(histo))*100)
-    # print(sum(persen))    
+        persen.append(histo[i]/sum(histo))
+    # print(sum(persen))
     return persen
 
+
 def histogram(img):
-    color = ['b','g','r']
+    color = ['b', 'g', 'r']
     # print(data)
-    data= []
+    data = []
     for i in range(len(color)):
-        histr = cv2.calcHist([img],[i],None,[256],[0,256])
+        histr = cv2.calcHist([img], [i], None, [256], [0, 256])
         persen = persentase(histr)
         data.append(np.average(persen[0:85]))
         data.append(np.average(persen[85:170]))
-        data.append(np.average(persen[170 :255]))
+        data.append(np.average(persen[170:255]))
     # # print(data)
     return data
 
@@ -28,6 +30,7 @@ def histogram(img):
 # thresh = cv2.threshold(img, 125, 255, cv2.THRESH_BINARY)
 # print('gr : ',gray)
 # print('hh : ', thresh)
+
 
 # =====================================================================================================
 # filename = 'D://xampp//htdocs//TA2_Rimpang//L1.png'
@@ -59,9 +62,9 @@ def histogram(img):
 #     print(np.average(persen[85:170]))
 #     print(np.average(persen[171:255]))
 
-    # print(sum(persen))
+# print(sum(persen))
 
-    # plt.plot(histr)
+# plt.plot(histr)
 
 
 # plt.show()
