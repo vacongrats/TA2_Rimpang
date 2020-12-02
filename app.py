@@ -141,402 +141,55 @@ def tampil_data():
 def testing():
 
     if request.method == 'POST':
-
-        datas = []
-        data1 = []
-        data2 = []
-        data3 = []
-        data4 = []
-        data_uji = []
-        Target1 = []
-        Target2 = []
-
-        x = None
-
+        eks = 2.71828183
+        phi = 3.14159
         opendb()
-        # =============DATA==================
-        cursor.execute('select * from tb_data where status = 1')
-        # cursor.execute('select target, count(target) as jumlah from tb_data group by target')
-        for id_data, nama, red1, red2, red3, green1, green2, green3, blue1, blue2, blue3, entropy, contrast, energy, homogeneity, target, status in cursor.fetchall():
-            datas.append([red1, red2, red3, green1, green2, green3, blue1,
-                          blue2, blue3, entropy, contrast, energy, homogeneity])
-            Target1.append(target)
+        akurasi = 0
+        error = 0
+        cursor.execute('select * from tb_data where status = 2 ')
+        for d in cursor.fetchall():
+            semongko = d[-2]
+            uji = []
+            result = []
+            uji = np.array(d[2:15])
+            p_data = []
+            for i in range(1, 5):
+                cursor.execute(
+                    'select * from tb_data where status = 1 and target = "'+str(i)+'"')
+                data_latih = []
+                target_latih = []
+                for data in cursor.fetchall():
+                    data_latih.append(data[2:15])
+                    target_latih.append(data[15])
+                    p_data.append(data[15])
+                data_latih = np.array(data_latih)
+                data_latih_transpose = np.transpose(data_latih)
+                # ====================MEAN===========================
+                mean = np.mean(data_latih_transpose, axis=1)
+                # =================STANDARDEVIASI====================
+                std_dev = np.sqrt(
+                    sum((data_latih-mean)**2)/(len(data_latih)-1))
+                # ====================GAUSSIAN=======================
+                eks_p = -(((uji-mean)**2)/(2*(std_dev)**2))
 
-        cursor.execute(
-            'select * from tb_data where `target` = 1 and status = 1')
-        for id_data, nama, red1, red2, red3, green1, green2, green3, blue1, blue2, blue3, entropy, contrast, energy, homogeneity, target, status in cursor.fetchall():
-            data1.append([red1, red2, red3, green1, green2, green3, blue1,
-                          blue2, blue3, entropy, contrast, energy, homogeneity])
-
-        cursor.execute(
-            'select * from tb_data where `target` = 2 and status = 1')
-        for id_data, nama, red1, red2, red3, green1, green2, green3, blue1, blue2, blue3, entropy, contrast, energy, homogeneity, target, status in cursor.fetchall():
-            data2.append([red1, red2, red3, green1, green2, green3, blue1,
-                          blue2, blue3, entropy, contrast, energy, homogeneity])
-
-        cursor.execute(
-            'select * from tb_data where `target` = 3 and status = 1')
-        for id_data, nama, red1, red2, red3, green1, green2, green3, blue1, blue2, blue3, entropy, contrast, energy, homogeneity, target, status in cursor.fetchall():
-            data3.append([red1, red2, red3, green1, green2, green3, blue1,
-                          blue2, blue3, entropy, contrast, energy, homogeneity])
-
-        cursor.execute(
-            'select * from tb_data where `target` = 4 and status = 1')
-        for id_data, nama, red1, red2, red3, green1, green2, green3, blue1, blue2, blue3, entropy, contrast, energy, homogeneity, target, status in cursor.fetchall():
-            data4.append([red1, red2, red3, green1, green2, green3, blue1,
-                          blue2, blue3, entropy, contrast, energy, homogeneity])
-
-        # ===============MEAN========  =======
-        x = np.array(Target1)
-        res = (np.unique(x, axis=0, return_counts=True))
-        avg = res[1]/sum(res[1])
-        print('res : ', res)
-        print('mean : ', avg)
-
-        # print('data :',datas)
-        mean01 = 0
-        mean1 = 0
-        mean2 = 0
-        mean3 = 0
-        mean4 = 0
-        mean5 = 0
-        mean6 = 0
-        mean7 = 0
-        mean8 = 0
-        mean9 = 0
-        mean10 = 0
-        mean11 = 0
-        mean12 = 0
-        mean13 = 0
-
-        # ========================================================================
-        for i in range(len(data1)):
-            mean01 = (data1[i][0] + data1[i][0])/res[1][0]
-            # print('data1 :',data1[i][0])
-        print('mean1 :', mean01)
-
-        for i in range(len(data1)):
-            mean2 = (data1[i][1] + data1[i][1])/res[1][0]
-            # print('data2 :',data1[i][1])
-        print('mean2 :', mean2)
-
-        for i in range(len(data1)):
-            mean3 = (data1[i][2] + data1[i][2])/res[1][0]
-            # print('data3 :',data1[i][2])
-        print('mean3 :', mean3)
-
-        for i in range(len(data1)):
-            mean4 = (data1[i][3] + data1[i][3])/res[1][0]
-            # print('data4 :',data1[i][3])
-        print('mean4 :', mean4)
-
-        for i in range(len(data1)):
-            mean5 = (data1[i][4] + data1[i][4])/res[1][0]
-            # print('data5 :',data1[i][4])
-        print('mean5 :', mean5)
-
-        for i in range(len(data1)):
-            mean6 = (data1[i][5] + data1[i][5])/res[1][0]
-            # print('data6 :',data1[i][5])
-        print('mean6 :', mean6)
-
-        for i in range(len(data1)):
-            mean7 = (data1[i][6] + data1[i][6])/res[1][0]
-            # print('data7 :',data1[i][6])
-        print('mean7 :', mean7)
-
-        for i in range(len(data1)):
-            mean8 = (data1[i][7] + data1[i][7])/res[1][0]
-            # print('data8 :',data1[i][7])
-        print('mean8 :', mean8)
-
-        for i in range(len(data1)):
-            mean9 = (data1[i][8] + data1[i][8])/res[1][0]
-            # print('data9 :',data1[i][8])
-        print('mean9 :', mean9)
-
-        for i in range(len(data1)):
-            mean10 = (data1[i][9] + data1[i][9])/res[1][0]
-            # print('data10 :',data1[i][9])
-        print('mean10 :', mean10)
-
-        for i in range(len(data1)):
-            mean11 = (data1[i][10] + data1[i][10])/res[1][0]
-            # print('data11 :',data1[i][10])
-        print('mean11 :', mean11)
-
-        for i in range(len(data1)):
-            mean12 = (data1[i][11] + data1[i][11])/res[1][0]
-            # print('data12 :',data1[i][11])
-        print('mean12 :', mean12)
-
-        for i in range(len(data1)):
-            mean13 = (data1[i][12] + data1[i][12])/res[1][0]
-            # print('data13 :',data1[i][12])
-        print('mean13 :', mean13)
-        # ========================================================================
-        # ========================================================================
-        for i in range(len(data2)):
-            mean1 = (data2[i][0] + data2[i][0])/res[1][1]
-            # print('data1 :',data2[i][0])
-        print('mean1 :', mean1)
-
-        for i in range(len(data2)):
-            mean2 = (data2[i][1] + data2[i][1])/res[1][1]
-            # print('data2 :',data2[i][1])
-        print('mean2 :', mean2)
-
-        for i in range(len(data2)):
-            mean3 = (data2[i][2] + data2[i][2])/res[1][1]
-            # print('data3 :',data2[i][2])
-        print('mean3 :', mean3)
-
-        for i in range(len(data2)):
-            mean4 = (data2[i][3] + data2[i][3])/res[1][1]
-            # print('data4 :',data2[i][3])
-        print('mean4 :', mean4)
-
-        for i in range(len(data2)):
-            mean5 = (data2[i][4] + data2[i][4])/res[1][1]
-            # print('data5 :',data2[i][4])
-        print('mean5 :', mean5)
-
-        for i in range(len(data2)):
-            mean6 = (data2[i][5] + data2[i][5])/res[1][1]
-            # print('data6 :',data2[i][5])
-        print('mean6 :', mean6)
-
-        for i in range(len(data2)):
-            mean7 = (data2[i][6] + data2[i][6])/res[1][1]
-            # print('data7 :',data2[i][6])
-        print('mean7 :', mean7)
-
-        for i in range(len(data2)):
-            mean8 = (data2[i][7] + data2[i][7])/res[1][1]
-            # print('data8 :',data2[i][7])
-        print('mean8 :', mean8)
-
-        for i in range(len(data2)):
-            mean9 = (data2[i][8] + data2[i][8])/res[1][1]
-            # print('data9 :',data2[i][8])
-        print('mean9 :', mean9)
-
-        for i in range(len(data2)):
-            mean10 = (data2[i][9] + data2[i][9])/res[1][1]
-            # print('data10 :',data2[i][9])
-        print('mean10 :', mean10)
-
-        for i in range(len(data2)):
-            mean11 = (data2[i][10] + data2[i][10])/res[1][1]
-            # print('data11 :',data2[i][10])
-        print('mean11 :', mean11)
-
-        for i in range(len(data2)):
-            mean12 = (data2[i][11] + data2[i][11])/res[1][1]
-            # print('data12 :',data2[i][11])
-        print('mean12 :', mean12)
-
-        for i in range(len(data2)):
-            mean13 = (data2[i][12] + data2[i][12])/res[1][1]
-            # print('data13 :',data2[i][12])
-        print('mean13 :', mean13)
-        # ========================================================================
-        # ========================================================================
-        for i in range(len(data3)):
-            mean1 = (data3[i][0] + data3[i][0])/res[1][2]
-            # print('data1 :',data3[i][0])
-        print('mean1 :', mean1)
-
-        for i in range(len(data3)):
-            mean2 = (data3[i][1] + data3[i][1])/res[1][2]
-            # print('data3 :',data3[i][1])
-        print('mean2 :', mean2)
-
-        for i in range(len(data3)):
-            mean3 = (data3[i][2] + data3[i][2])/res[1][2]
-            # print('data3 :',data3[i][2])
-        print('mean3 :', mean3)
-
-        for i in range(len(data3)):
-            mean4 = (data3[i][3] + data3[i][3])/res[1][2]
-            # print('data4 :',data3[i][3])
-        print('mean4 :', mean4)
-
-        for i in range(len(data3)):
-            mean5 = (data3[i][4] + data3[i][4])/res[1][2]
-            # print('data5 :',data3[i][4])
-        print('mean5 :', mean5)
-
-        for i in range(len(data3)):
-            mean6 = (data3[i][5] + data3[i][5])/res[1][2]
-            # print('data6 :',data3[i][5])
-        print('mean6 :', mean6)
-
-        for i in range(len(data3)):
-            mean7 = (data3[i][6] + data3[i][6])/res[1][2]
-            # print('data7 :',data3[i][6])
-        print('mean7 :', mean7)
-
-        for i in range(len(data3)):
-            mean8 = (data3[i][7] + data3[i][7])/res[1][2]
-            # print('data8 :',data3[i][7])
-        print('mean8 :', mean8)
-
-        for i in range(len(data3)):
-            mean9 = (data3[i][8] + data3[i][8])/res[1][2]
-            # print('data9 :',data3[i][8])
-        print('mean9 :', mean9)
-
-        for i in range(len(data3)):
-            mean10 = (data3[i][9] + data3[i][9])/res[1][2]
-            # print('data10 :',data3[i][9])
-        print('mean10 :', mean10)
-
-        for i in range(len(data3)):
-            mean11 = (data3[i][10] + data3[i][10])/res[1][2]
-            # print('data11 :',data3[i][10])
-        print('mean11 :', mean11)
-
-        for i in range(len(data3)):
-            mean12 = (data3[i][11] + data3[i][11])/res[1][2]
-            # print('data12 :',data3[i][11])
-        print('mean12 :', mean12)
-
-        for i in range(len(data3)):
-            mean13 = (data3[i][12] + data3[i][12])/res[1][2]
-            # print('data13 :',data3[i][12])
-        print('mean13 :', mean13)
-        # ========================================================================
-        # ========================================================================
-        for i in range(len(data4)):
-            mean1 = (data4[i][0] + data4[i][0])/res[1][3]
-            # print('data1 :',data4[i][0])
-        print('mean1 :', mean1)
-
-        for i in range(len(data4)):
-            mean2 = (data4[i][1] + data4[i][1])/res[1][3]
-            # print('data4 :',data4[i][1])
-        print('mean2 :', mean2)
-
-        for i in range(len(data4)):
-            mean3 = (data4[i][2] + data4[i][2])/res[1][3]
-            # print('data3 :',data4[i][2])
-        print('mean3 :', mean3)
-
-        for i in range(len(data4)):
-            mean4 = (data4[i][3] + data4[i][3])/res[1][3]
-            # print('data4 :',data4[i][3])
-        print('mean4 :', mean4)
-
-        for i in range(len(data4)):
-            mean5 = (data4[i][4] + data4[i][4])/res[1][3]
-            # print('data5 :',data4[i][4])
-        print('mean5 :', mean5)
-
-        for i in range(len(data4)):
-            mean6 = (data4[i][5] + data4[i][5])/res[1][3]
-            # print('data6 :',data4[i][5])
-        print('mean6 :', mean6)
-
-        for i in range(len(data4)):
-            mean7 = (data4[i][6] + data4[i][6])/res[1][3]
-            # print('data7 :',data4[i][6])
-        print('mean7 :', mean7)
-
-        for i in range(len(data4)):
-            mean8 = (data4[i][7] + data4[i][7])/res[1][3]
-            # print('data8 :',data4[i][7])
-        print('mean8 :', mean8)
-
-        for i in range(len(data4)):
-            mean9 = (data4[i][8] + data4[i][8])/res[1][3]
-            # print('data9 :',data4[i][8])
-        print('mean9 :', mean9)
-
-        for i in range(len(data4)):
-            mean10 = (data4[i][9] + data4[i][9])/res[1][3]
-            # print('data10 :',data4[i][9])
-        print('mean10 :', mean10)
-
-        for i in range(len(data4)):
-            mean11 = (data4[i][10] + data4[i][10])/res[1][3]
-            # print('data11 :',data4[i][10])
-        print('mean11 :', mean11)
-
-        for i in range(len(data4)):
-            mean12 = (data4[i][11] + data4[i][11])/res[1][3]
-            # print('data12 :',data4[i][11])
-        print('mean12 :', mean12)
-
-        for i in range(len(data4)):
-            mean13 = (data4[i][12] + data4[i][12])/res[1][3]
-            # print('data13 :',data4[i][12])
-        print('mean13 :', mean13)
-        # ========================================================================
-        # standar deviasi
-        std1 = 0
-        for i in range(len(data1)):
-            sd1 = math.sqrt((data1[i][0] - mean01)**2)/(res[1][0] - 1)
-            print('data 1: ', data1[i][0])
-        print('standev 1 :', std1)
-        sd1 = 0
-        for i in range(len(data1)):
-            sd1 = math.sqrt((data1[i][0] - mean1)**2)/(res[1][0] - 1)
-        print('standev 1 :', std1)
-        sd1 = 0
-        for i in range(len(data1)):
-            sd1 = math.sqrt((data1[i][0] - mean1)**2)/(res[1][0] - 1)
-        print('standev 1 :', std1)
-        sd1 = 0
-        for i in range(len(data1)):
-            sd1 = math.sqrt((data1[i][0] - mean1)**2)/(res[1][0] - 1)
-        print('standev 1 :', std1)
-        sd1 = 0
-        for i in range(len(data1)):
-            sd1 = math.sqrt((data1[i][0] - mean1)**2)/(res[1][0] - 1)
-        print('standev 1 :', std1)
-        sd1 = 0
-        for i in range(len(data1)):
-            sd1 = math.sqrt((data1[i][0] - mean1)**2)/(res[1][0] - 1)
-        print('standev 1 :', std1)
-        sd1 = 0
-        for i in range(len(data1)):
-            sd1 = math.sqrt((data1[i][0] - mean1)**2)/(res[1][0] - 1)
-        print('standev 1 :', std1)
-        sd1 = 0
-        for i in range(len(data1)):
-            sd1 = math.sqrt((data1[i][0] - mean1)**2)/(res[1][0] - 1)
-        print('standev 1 :', std1)
-        sd1 = 0
-        for i in range(len(data1)):
-            sd1 = math.sqrt((data1[i][0] - mean1)**2)/(res[1][0] - 1)
-        print('standev 1 :', std1)
-        sd1 = 0
-        for i in range(len(data1)):
-            sd1 = math.sqrt((data1[i][0] - mean1)**2)/(res[1][0] - 1)
-        print('standev 1 :', std1)
-        sd1 = 0
-        for i in range(len(data1)):
-            sd1 = math.sqrt((data1[i][0] - mean1)**2)/(res[1][0] - 1)
-        print('standev 1 :', std1)
-        sd1 = 0
-        for i in range(len(data1)):
-            sd1 = math.sqrt((data1[i][0] - mean1)**2)/(res[1][0] - 1)
-        print('standev 1 :', std1)
-        sd1 = 0
-        for i in range(len(data1)):
-            sd1 = math.sqrt((data1[i][0] - mean1)**2)/(res[1][0] - 1)
-        print('standev 1 :', std1)
-
-        # =============UJI==================
-        cursor.execute('select * from tb_data where status = 2')
-        for id_data, nama, red1, red2, red3, green1, green2, green3, blue1, blue2, blue3, entropy, contrast, energy, homogeneity, target, status in cursor.fetchall():
-            data_uji.append([red1, red2, red3, green1, green2, green3,
-                             blue1, blue2, blue3, entropy, contrast, energy, homogeneity])
-            Target2.append(target)
-        ############################################################################################################################
-        # ==================NBC==================
-
+                p = (1/(np.sqrt(2*phi)*std_dev))*eks**eks_p
+                result.append(p)
+            result = np.array(result)
+            res_t = np.transpose(result)
+            p_data = np.unique(p_data, return_counts=True)
+            p_data = p_data[1]/sum(p_data[1])
+            res = 1
+            for i in range(len(res_t)):
+                res *= res_t[i]
+            ouput = res*p_data
+            wk = max(ouput)
+            wk = (list(ouput).index(wk)+1)
+            if wk is semongko:
+                akurasi += 1
+            else:
+                error += 1
+        print('akurasi : ', (akurasi/(akurasi+error))*100, '%')
+        print('error : ', (error/(akurasi+error))*100, '%')
         closedb()
         return render_template('testing.html')
     else:
