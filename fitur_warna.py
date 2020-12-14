@@ -6,7 +6,7 @@ from matplotlib import pyplot as plt
 def persentase(histo):
     persen = []
     for i in range(len(histo)):
-        persen.append(histo[i]/sum(histo))
+        persen.append((histo[i]/sum(histo))*100)
     # print(sum(persen))
     return persen
 

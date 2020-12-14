@@ -60,15 +60,8 @@ def index():
 @app.route('/ekstraksi_fitur',  methods=['GET', 'POST'])
 def ekstraksi_fitur():
     if request.method == 'GET':
-        opendb()
-        cursor.execute('select * from tb_data')
-        result = []
-        for id_data, nama, red1, red2, red3, green1, green2, green3, blue1, blue2, blue3, entropys, contrasts, energys, homogeneitys, target, status in cursor.fetchall():
-            result.append((id_data, nama, red1, red2, red3, green1, green2, green3, blue1,
-                           blue2, blue3, entropys, contrasts, energys, homogeneitys, target, status))
 
-        closedb()
-        return render_template('ekstraksi_fitur.html', result=result)
+        return render_template('ekstraksi_fitur.html')
     else:
         citra = request.files['file']  # mengambil filename gambar
 
@@ -101,18 +94,18 @@ def ekstraksi_fitur():
             data[5]), str(data[0]), str(data[1]), str(data[2]), str(ent), str(ctr), str(eng), str(hmg), str(target))
 
         opendb()
-        cursor.execute('''insert into  `tb_data`(`nama`, `red1`, `red2`, `red3`, `green1`, `green2`, `green3`, `blue1`, `blue2`, `blue3`, `entropy`, `contrast`, `energy`, `homogeneity`, `target`, `status`) values('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','1')''' % datas)
-
-        # Select semua data (tabel)
-        # cursor.execute('select * from tb_data')
-        # result= []
-        # for id_data,nama, red1, red2, red3, green1, green2, green3, blue1, blue2, blue3, entropy, contrast, energy, homogeneity, target, status in cursor.fetchall():
-        #     result.append((id_data,nama, red1, red2, red3, green1, green2, green3, blue1, blue2, blue3, entropy, contrast, energy, homogeneity, target, status))
+        cursor.execute('''insert into  `tb_data`(`nama`, `red1`, `red2`, `red3`, `green1`, `green2`, `green3`, `blue1`, `blue2`, `blue3`, `entropy`, `contrast`, `energy`, `homogeneity`, `target`, `status`) values('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','2')''' % datas)
+        cursor.execute(
+            'select * from `tb_data` where id_data order by id_data desc limit 1')
+        result = []
+        for id_data, nama, red1, red2, red3, green1, green2, green3, blue1, blue2, blue3, entropys, contrasts, energys, homogeneitys, targets, status in cursor.fetchall():
+            result.append((id_data, nama, red1, red2, red3, green1, green2, green3, blue1,
+                           blue2, blue3, entropys, contrasts, energys, homogeneitys, targets, status))
 
         conn.commit()
         closedb()
 
-    return render_template('ekstraksi_fitur.html')
+    return render_template('ekstraksi_fitur.html', result=result)
 ##########################################################################################################
 
 
@@ -139,13 +132,15 @@ def tampil_data():
 
 @app.route('/testing',  methods=['GET', 'POST'])
 def testing():
-
     if request.method == 'POST':
         eks = 2.71828183
         phi = 3.14159
         opendb()
+        benar = 0
+        salah = 0
         akurasi = 0
         error = 0
+        prediksi = []
         cursor.execute('select * from tb_data where status = 2 ')
         for d in cursor.fetchall():
             semongko = d[-2]
@@ -174,6 +169,7 @@ def testing():
 
                 p = (1/(np.sqrt(2*phi)*std_dev))*eks**eks_p
                 result.append(p)
+            # ===================Kelas Pemenang======================
             result = np.array(result)
             res_t = np.transpose(result)
             p_data = np.unique(p_data, return_counts=True)
@@ -184,14 +180,29 @@ def testing():
             ouput = res*p_data
             wk = max(ouput)
             wk = (list(ouput).index(wk)+1)
+
             if wk is semongko:
-                akurasi += 1
+                prediksi.append((wk, 0))
+                benar += 1
             else:
-                error += 1
-        print('akurasi : ', (akurasi/(akurasi+error))*100, '%')
-        print('error : ', (error/(akurasi+error))*100, '%')
+                prediksi.append((wk, 1))
+                salah += 1
+            print('wk :', wk, 's : ', semongko)
+        akurasi = ((benar/(benar+salah))*100)
+        error = ((salah/(benar+salah))*100)
+        print("Jumlah Benar : ", benar)
+        print("Jumlah Salah : ", salah)
+        print('akurasi : ', akurasi, '%')
+        print('error : ', error, '%')
+
+        cursor.execute('select * from tb_data where status = 2')
+        result = []
+        for id_data, nama, red1, red2, red3, green1, green2, green3, blue1, blue2, blue3, entropys, contrasts, energys, homogeneitys, target, status in cursor.fetchall():
+            result.append((id_data, nama, red1, red2, red3, green1, green2, green3, blue1,
+                           blue2, blue3, entropys, contrasts, energys, homogeneitys, target, status))
+
         closedb()
-        return render_template('testing.html')
+        return render_template('testing.html', benar=benar, salah=salah, akurasi=akurasi, error=error, result=result, prediksi=prediksi, wk=wk)
     else:
 
         return render_template('testing.html')

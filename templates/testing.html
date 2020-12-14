@@ -17,29 +17,22 @@
               <span class="section-heading-lower">Citra Rimpang</span>
             </h2>
             <form action="/testing" enctype="multipart/form-data" method="post">
-            <!-- Button -->
-            <button type="submit" class="btn btn-success btn-icon-split">
-              <!-- </form> -->
-              <span class="icon text-white-50">
-                <i class="fas fa-sync-alt"></i>
-              </span>
-              <span class="text">PROSES</span>
-            </button>
-          </form>
-            <p class="address mb-5">
-              <em>
-                <strong>1116 Orchard Street</strong>
-                <br>
-                Golden Valley, Minnesota
-              </em>
-            </p>
-            <p class="mb-0">
-              <small>
-                <em>Call Anytime</em>
-              </small>
-              <br>
-              (317) 585-8468
-            </p>
+              <button type="submit" class="btn btn-success btn-icon-split">
+                <span class="icon text-white-50">
+                  <i class="fas fa-sync-alt"></i>
+                </span>
+                <span class="text">PROSES</span>
+              </button>
+              <br><br>
+              <p class="address mb-5">
+                <em>
+                  <strong>Akurasi : {{akurasi}}%</strong>
+                  <br>
+                  Error : {{error}}%
+                </em>
+              </p>
+              
+            </form>
           </div>
         </div>
       </div>
@@ -54,16 +47,81 @@
           <div class="col-xl-9 col-lg-10 mx-auto">
             <div class="bg-faded rounded p-5">
               <h2 class="section-heading mb-4">
-                <span class="section-heading-upper">Strong Coffee, Strong Roots</span>
-                <span class="section-heading-lower">About Our Cafe</span>
+                <span class="section-heading-upper">Tabel Hasil Pengujian</span>
+                <span class="section-heading-lower">Klasifikasi Rimpang</span>
               </h2>
-              <p>Founded in 1987 by the Hernandez brothers, our establishment has been serving up rich coffee sourced from
-                artisan farmers in various regions of South and Central America. We are dedicated to travelling the world,
-                finding the best coffee, and bringing back to you here in our cafe.</p>
-              <p class="mb-0">We guarantee that you will fall in
-                <em>lust</em>
-                with our decadent blends the moment you walk inside until you finish your last sip. Join us for your daily
-                routine, an outing with friends, or simply just to enjoy some alone time.</p>
+              <table align="center">
+                <tr>
+                  <td>
+                   
+                    <table class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+                      <thead>
+                        <tr align="center">
+                          <th class="th-sm" scope="col">JENIS RIMPANG</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for baris in result %}
+                        <tr>
+                          <td>
+                            {% if baris[15] == 1%}
+                            <h6>Jahe</h6>
+                            {% elif baris[15] == 2%}
+                            <h6>Kencur</h6>
+                            {% elif baris[15] == 3%}
+                            <h6>Kunyit</h6>
+                            {%else%}
+                            <h6>Lengkuas</h6>
+                            {%endif%}
+                          </td>
+                          {% endfor %}
+                      </tbody>
+                    </table>
+                         
+                  </td>
+                  <td>                    
+                    <table class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
+                      <thead>
+                        <tr align="center">
+                          <th class="th-sm" scope="col">PREDIKSI</th>                      
+                          <th class="th-sm" scope="col">VALIDASI</th>                      
+                        </tr>                                 
+                      </thead>                      
+                      <tbody>
+                        {% for x in prediksi%}
+                        <tr>
+                          <td>
+                            {% if x[0] == 1%}
+                            <h6>Jahe</h6>
+                            {% elif x[0] == 2%}
+                            <h6>Kencur</h6>
+                            {% elif x[0] == 3%}
+                            <h6>Kunyit</h6>
+                            {%else%}
+                            <h6>Lengkuas</h6>
+                            {%endif%}
+                          </td>
+                        
+                          <td>
+                            {% if x[1] == 0 %}
+                            <h6>BENAR</h6>
+                            {% else %}
+                            <h6 style="color:red;">SALAH</h6>
+                            {% endif %}
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                         
+                  </td>
+                </tr>
+              </table>
+              <p class="mb-0">
+                Jumlah Benar = {{benar}}
+                <br>
+                Jumlah Salah = {{salah}}
+              </p>
             </div>
           </div>
         </div>

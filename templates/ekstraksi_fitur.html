@@ -56,14 +56,104 @@
                 </button>            
                   
               </form>
-
-                                                                                                                             
-
             </div>
           </div>
         </div>
       </div>
     </div>
+  </section>
+  <br><br>
+  <section class="page-section-heading mb-0">
+    <!-- <div class="container"> -->
+      <!-- <img class="img-fluid rounded about-heading-img mb-3 mb-lg-0" src="static/img/about.jpg" alt=""> -->
+      <div class="about-heading-content">
+        <div class="row">
+          <div class="col-sm-16 mx-auto">
+            <div class="bg-faded rounded p-5">
+              <h2 class="section-heading mb-4">
+                <span class="section-heading-upper">Tabel Hasil</span>
+                <span class="section-heading-lower">Ekstraksi Fitur Warna & Tekstur</span>
+              </h2>
+             
+                <table  class="table table-striped table-bordered table-sm" cellspacing="0" width="100%" border="1">
+                  <thead>
+                    <tr align="center">
+                      <th class="th-sm" scope="col" rowspan="2">KETERANGAN
+        
+                      </th>
+                      <th class="th-sm" scope="col" colspan="3">RED
+        
+                      </th>
+                      <th class="th-sm" scope="col" colspan="3">GREEN
+        
+                      </th>
+                      <th class="th-sm" scope="col" colspan="3">BLUE
+        
+                      </th>
+                      <th class="th-sm" scope="col" rowspan="2">ENTROPY
+        
+                      </th>
+                      <th class="th-sm" scope="col" rowspan="2">CONTRAST
+        
+                      </th>
+                      <th class="th-sm" scope="col" rowspan="2">ENERGY
+        
+                      </th>
+                      <th class="th-sm" scope="col" rowspan="2">HOMOGENEITY
+        
+                      </th>
+                      </th>
+        
+                    </tr>
+                    <tr align="center">
+                      <th>A</th>
+                      <th>B</th>
+                      <th>C</th>
+                      <th>A</th>
+                      <th>B</th>
+                      <th>C</th>
+                      <th>A</th>
+                      <th>B</th>
+                      <th>C</th>
+                    </tr>
+                  </thead>
+        
+                  <tbody>
+                    {% for baris in result %}
+                    <tr>
+                      <td>
+                        {% if baris[15] == 1%}
+                        <h6>Jahe</h6>
+                        {% elif baris[15] == 2%}
+                        <h6>Kencur</h6>
+                        {% elif baris[15] == 3%}
+                        <h6>Kunyit</h6>
+                        {%else%}
+                        <h6>Lengkuas</h6>
+                        {%endif%}
+                      </td>
+                      <td>{{ baris[2] }}</td>
+                      <td>{{ baris[3] }}</td>
+                      <td>{{ baris[4] }}</td>
+                      <td>{{ baris[5] }}</td>
+                      <td>{{ baris[6] }}</td>
+                      <td>{{ baris[7] }}</td>
+                      <td>{{ baris[8] }}</td>
+                      <td>{{ baris[9] }}</td>
+                      <td>{{ baris[10] }}</td>
+                      <td>{{ baris[11] }}</td>
+                      <td>{{ baris[12] }}</td>
+                      <td>{{ baris[13] }}</td>
+                      <td>{{ baris[14] }}</td>
+                      {% endfor %}
+                  </tbody>
+                </table>
+                   
+            </div>
+          </div>
+        </div>
+      </div>
+    <!-- </div> -->
   </section>
 </div>
 <!-- /.container-fluid -->
