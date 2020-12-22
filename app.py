@@ -65,8 +65,9 @@ def ekstraksi_fitur():
     else:
         citra = request.files['file']  # mengambil filename gambar
 
-        img = cv2.imdecode(np.fromstring(request.files['file'].read(
+        citra1 = cv2.imdecode(np.fromstring(request.files['file'].read(
         ), np.uint8), cv2.IMREAD_UNCHANGED)  # membuat vaiable dari name
+        img = citra1[150:300, 200:350]
         # # histogram
         data = histogram(img)
 

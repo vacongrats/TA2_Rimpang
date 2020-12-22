@@ -57,12 +57,14 @@
                     <table class="table table-striped table-bordered table-sm" cellspacing="0" width="100%">
                       <thead>
                         <tr align="center">
+                          <th class="th-sm" scope="col">NAMA FILe</th>
                           <th class="th-sm" scope="col">JENIS RIMPANG</th>
                         </tr>
                       </thead>
                       <tbody>
                         {% for baris in result %}
                         <tr>
+                          <td>{{baris[1]}}</td>
                           <td>
                             {% if baris[15] == 1%}
                             <h6>Jahe</h6>
