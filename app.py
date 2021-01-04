@@ -162,14 +162,8 @@ def testing():
                 data_latih_transpose = np.transpose(data_latih)
                 # ====================MEAN===========================
                 mean = np.mean(data_latih_transpose, axis=1)
-                # print("target :", target_latih)
-                # print('mean : ', mean)
-                # print('mean 1: ', mean[0])
-                # print('mean 2: ', mean[1])
-                # print('mean 3: ', mean[2])
+
                 kelas_mean = str(i)
-                print(i)
-                # print("kelas : ", kelas[0])
                 datas_mean = (kelas_mean, str(mean[0]), str(mean[1]), str(mean[2]), str(mean[3]), str(mean[4]),
                               str(mean[5]), str(mean[6]), str(mean[7]), str(mean[8]), str(mean[9]), str(mean[10]), str(mean[11]), str(mean[12]))
                 cek = []
@@ -179,7 +173,6 @@ def testing():
                 for id_mean, kelas_mean, red1, red2, red3, green1, green2, green3, blue1, blue2, blue3, entropy, contrast, energy, homogeneity in cursor.fetchall():
                     cek.append([kelas_mean, red1, red2, red3, green1, green2, green3,
                                 blue1, blue2, blue3, entropy, contrast, energy, homogeneity])
-                # print('\n\n\n\n\n\n\n', len(cek))
                 if len(cek) == 0:
                     cursor.execute(
                         "insert into tb_mean(kelas, red1, red2, red3, green1, green2, green3, blue1, blue2, blue3, entropy, contrast, energy, homogeneity) values ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')", datas_mean)
