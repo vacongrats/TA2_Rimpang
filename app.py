@@ -33,7 +33,7 @@ def opendb():
     conn = mysql.connector.connect(
         user='root',
         password='',
-        database='db_tarimpang',
+        database='db_tarimpang2',
         host='127.0.0.1'
     )
     cursor = conn.cursor()
@@ -65,9 +65,9 @@ def ekstraksi_fitur():
     else:
         citra = request.files['file']  # mengambil filename gambar
 
-        citra1 = cv2.imdecode(np.fromstring(request.files['file'].read(
+        img = cv2.imdecode(np.fromstring(request.files['file'].read(
         ), np.uint8), cv2.IMREAD_UNCHANGED)  # membuat vaiable dari name
-        img = citra1[150:300, 200:350]
+        # img = citra1[150:300, 200:350]
         # # histogram
         data = histogram(img)
 
@@ -162,14 +162,73 @@ def testing():
                 data_latih_transpose = np.transpose(data_latih)
                 # ====================MEAN===========================
                 mean = np.mean(data_latih_transpose, axis=1)
+                # print("target :", target_latih)
+                # print('mean : ', mean)
+                # print('mean 1: ', mean[0])
+                # print('mean 2: ', mean[1])
+                # print('mean 3: ', mean[2])
+                kelas_mean = str(i)
+                print(i)
+                # print("kelas : ", kelas[0])
+                datas_mean = (kelas_mean, str(mean[0]), str(mean[1]), str(mean[2]), str(mean[3]), str(mean[4]),
+                              str(mean[5]), str(mean[6]), str(mean[7]), str(mean[8]), str(mean[9]), str(mean[10]), str(mean[11]), str(mean[12]))
+                cek = []
+                # ==================DB====================
+                cursor.execute(
+                    "select * from tb_mean where kelas=%s" % kelas_mean)
+                for id_mean, kelas_mean, red1, red2, red3, green1, green2, green3, blue1, blue2, blue3, entropy, contrast, energy, homogeneity in cursor.fetchall():
+                    cek.append([kelas_mean, red1, red2, red3, green1, green2, green3,
+                                blue1, blue2, blue3, entropy, contrast, energy, homogeneity])
+                # print('\n\n\n\n\n\n\n', len(cek))
+                if len(cek) == 0:
+                    cursor.execute(
+                        "insert into tb_mean(kelas, red1, red2, red3, green1, green2, green3, blue1, blue2, blue3, entropy, contrast, energy, homogeneity) values ('%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s','%s')", datas_mean)
+                else:
+                    cursor.execute(
+                        "update tb_mean set red1=%s, red2=%s, red3=%s, green1=%s, green2=%s, green3=%s, blue1=%s, blue2=%s, blue3=%s, entropy=%s, contrast=%s, energy=%s, homogeneity=%s where kelas=%s", (
+                            str(mean[0]), str(mean[1]), str(mean[2]), str(mean[3]), str(mean[4]), str(mean[5]), str(mean[6]), str(mean[7]), str(mean[8]), str(mean[9]), str(mean[10]), str(mean[11]), str(mean[12]),  kelas_mean)
+                    )
+                conn.commit()
+
                 # =================STANDARDEVIASI====================
                 std_dev = np.sqrt(
                     sum((data_latih-mean)**2)/(len(data_latih)-1))
+
+                kelas_standev = str(i)
+                datas_standev = (kelas_standev, str(std_dev[0]), str(std_dev[1]), str(std_dev[2]), str(std_dev[3]), str(std_dev[4]),
+                                 str(std_dev[5]), str(std_dev[6]), str(std_dev[7]), str(std_dev[8]), str(std_dev[9]), str(std_dev[10]), str(std_dev[11]), str(std_dev[12]))
+                cek2 = []
+                # ==================DB====================
+                cursor.execute(
+                    "select * from tb_standev where kelas=%s" % kelas_standev)
+                for id_standev, kelas_standev, red1, red2, red3, green1, green2, green3, blue1, blue2, blue3, entropy, contrast, energy, homogeneity in cursor.fetchall():
+                    cek2.append([kelas_standev, red1, red2, red3, green1, green2, green3,
+                                 blue1, blue2, blue3, entropy, contrast, energy, homogeneity])
+                if len(cek2) == 0:
+                    cursor.execute(
+                        "insert into tb_standev (kelas, red1, red2, red3, green1, green2, green3, blue1, blue2, blue3, entropy, contrast, energy, homogeneity) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", datas_standev)
+                else:
+                    cursor.execute(
+                        "update tb_standev set red1=%s, red2=%s, red3=%s, green1=%s, green2=%s, green3=%s, blue1=%s, blue2=%s, blue3=%s, entropy=%s, contrast=%s, energy=%s, homogeneity=%s where kelas=%s", (
+                            str(std_dev[0]), str(std_dev[1]), str(std_dev[2]), str(std_dev[3]), str(std_dev[4]), str(std_dev[5]), str(std_dev[6]), str(std_dev[7]), str(std_dev[8]), str(std_dev[9]), str(std_dev[10]), str(std_dev[11]), str(std_dev[12]),  kelas_standev))
+                conn.commit()
+
                 # ====================GAUSSIAN=======================
+                mean_sql = None
+                std_dev_sql = None
+                cursor.execute(
+                    "select * from tb_mean where kelas=%s limit 1" % (str(i)))
+                mean_sql = cursor.fetchone()
+                cursor.execute(
+                    "select * from tb_standev where kelas=%s limit 1" % (str(i)))
+                std_dev_sql = cursor.fetchone()
+                mean = np.array(mean_sql[2:])
+                std_dev = np.array(std_dev_sql[2:])
                 eks_p = -(((uji-mean)**2)/(2*(std_dev)**2))
 
                 p = (1/(np.sqrt(2*phi)*std_dev))*eks**eks_p
                 result.append(p)
+
             # ===================Kelas Pemenang======================
             result = np.array(result)
             res_t = np.transpose(result)
@@ -188,7 +247,7 @@ def testing():
             else:
                 prediksi.append((wk, 1))
                 salah += 1
-            print('wk :', wk, 's : ', semongko)
+            # print('wk :', wk, 's : ', semongko)
         akurasi = ((benar/(benar+salah))*100)
         error = ((salah/(benar+salah))*100)
         print("Jumlah Benar : ", benar)
