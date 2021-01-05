@@ -136,8 +136,6 @@ def edit():
     opendb()
     cursor.execute('select * from tb_data where status = 2 ')
     for d in cursor.fetchall():
-        result = []
-        uji = np.array(d[2:15])
         p_data = []
         for i in range(1, 5):
             cursor.execute(
