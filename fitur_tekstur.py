@@ -7,10 +7,10 @@ import cv2
 
 def check_value(data, h, w):
     first = []
-    for i in range(0, h):
-        for j in range(0, w):
+    for x in range(0, h):
+        for y in range(0, w):
             try:
-                first.append([data[i, j], data[i, j+1]])
+                first.append([data[x, y], data[x, y-1]])
             except:
                 pass
     return first

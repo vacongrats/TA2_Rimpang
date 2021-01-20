@@ -132,7 +132,7 @@ def tampil_data():
 
 
 @app.route('/training', methods=['POST'])
-def edit():
+def training():
     opendb()
     cursor.execute('select * from tb_data where status = 2 ')
     for d in cursor.fetchall():
@@ -210,7 +210,7 @@ def testing():
         prediksi = []
         cursor.execute('select * from tb_data where status = 2 ')
         for d in cursor.fetchall():
-            semongko = d[-2]
+            se = d[-2]
             uji = []
             result = []
             uji = np.array(d[2:15])
@@ -225,7 +225,7 @@ def testing():
                     target_latih.append(data[15])
                     p_data.append(data[15])
                 data_latih = np.array(data_latih)
-                # ====================GAUSSIAN=======================
+                # ====================DENSITAS=======================
                 mean_sql = None
                 std_dev_sql = None
                 cursor.execute(
@@ -240,7 +240,26 @@ def testing():
 
                 p = (1/(np.sqrt(2*phi)*std_dev))*eks**eks_p
                 result.append(p)
+                # print("pro : ", p)
 
+                # kelas_densitas = str(i)
+                # datas_densitas = (kelas_densitas, str(p[0]), str(p[1]), str(p[2]), str(p[3]), str(p[4]),
+                #                   str(p[5]), str(p[6]), str(p[7]), str(p[8]), str(p[9]), str(p[10]), str(p[11]), str(p[12]))
+                # cek2 = []
+                # # ==================DB====================
+                # cursor.execute(
+                #     "select * from tb_densitas where kelas=%s" % kelas_densitas)
+                # for id_densitas, kelas_densitas, red1, red2, red3, green1, green2, green3, blue1, blue2, blue3, entropy, contrast, energy, homogeneity in cursor.fetchall():
+                #     cek2.append([kelas_densitas, red1, red2, red3, green1, green2, green3,
+                #                  blue1, blue2, blue3, entropy, contrast, energy, homogeneity])
+                # if len(cek2) == 0:
+                #     cursor.execute(
+                #         "insert into tb_densitas (kelas, red1, red2, red3, green1, green2, green3, blue1, blue2, blue3, entropy, contrast, energy, homogeneity) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", datas_densitas)
+                # else:
+                #     cursor.execute(
+                #         "update tb_densitas set red1=%s, red2=%s, red3=%s, green1=%s, green2=%s, green3=%s, blue1=%s, blue2=%s, blue3=%s, entropy=%s, contrast=%s, energy=%s, homogeneity=%s where kelas=%s", (
+                #             str(p[0]), str(p[1]), str(p[2]), str(p[3]), str(p[4]), str(p[5]), str(p[6]), str(p[7]), str(p[8]), str(p[9]), str(p[10]), str(p[11]), str(p[12]),  kelas_densitas))
+                # conn.commit()
             # ===================Kelas Pemenang======================
             result = np.array(result)
             res_t = np.transpose(result)
@@ -253,13 +272,13 @@ def testing():
             wk = max(ouput)
             wk = (list(ouput).index(wk)+1)
 
-            if wk is semongko:
+            if wk is se:
                 prediksi.append((wk, 0))
                 benar += 1
             else:
                 prediksi.append((wk, 1))
                 salah += 1
-            # print('wk :', wk, 's : ', semongko)
+            # print('wk :', wk, 's : ', se)
         akurasi = ((benar/(benar+salah))*100)
         error = ((salah/(benar+salah))*100)
         print("Jumlah Benar : ", benar)
