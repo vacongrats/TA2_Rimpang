@@ -10,7 +10,7 @@ def check_value(data, h, w):
     for x in range(0, h):
         for y in range(0, w):
             try:
-                first.append([data[x, y], data[x, y-1]])
+                first.append([data[x, y], data[x, y+1]])
             except:
                 pass
     return first
