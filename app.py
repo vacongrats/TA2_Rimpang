@@ -146,6 +146,7 @@ def training():
                 data_latih.append(data[2:15])
                 target_latih.append(data[15])
                 p_data.append(data[15])
+
             data_latih = np.array(data_latih)
             data_latih_transpose = np.transpose(data_latih)
             # ====================MEAN===========================
@@ -202,19 +203,35 @@ def testing():
     if request.method == 'POST':
         eks = 2.71828183
         phi = 3.14159
+
         opendb()
+
         benar = 0
         salah = 0
+        benar_j = 0
+        salah_j = 0
+        benar_ke = 0
+        salah_ke = 0
+        benar_ku = 0
+        salah_ku = 0
+        benar_l = 0
+        salah_l = 0
         akurasi = 0
         error = 0
+        cm_benar = 0
+        cm_salah = 0
         prediksi = []
+        prediksi1 = []
+
         cursor.execute('select * from tb_data where status = 2 ')
         for d in cursor.fetchall():
+            # target_uji.append(data[-2])
             se = d[-2]
             uji = []
             result = []
             uji = np.array(d[2:15])
             p_data = []
+
             for i in range(1, 5):
                 cursor.execute(
                     'select * from tb_data where status = 1 and target = "'+str(i)+'"')
@@ -224,6 +241,7 @@ def testing():
                     data_latih.append(data[2:15])
                     target_latih.append(data[15])
                     p_data.append(data[15])
+
                 data_latih = np.array(data_latih)
                 # ====================DENSITAS=======================
                 mean_sql = None
@@ -234,42 +252,29 @@ def testing():
                 cursor.execute(
                     "select * from tb_standev where kelas=%s limit 1" % (str(i)))
                 std_dev_sql = cursor.fetchone()
+
                 mean = np.array(mean_sql[2:])
                 std_dev = np.array(std_dev_sql[2:])
+
                 eks_p = -(((uji-mean)**2)/(2*(std_dev)**2))
 
                 p = (1/(np.sqrt(2*phi)*std_dev))*eks**eks_p
                 result.append(p)
                 # print("pro : ", p)
 
-                # kelas_densitas = str(i)
-                # datas_densitas = (kelas_densitas, str(p[0]), str(p[1]), str(p[2]), str(p[3]), str(p[4]),
-                #                   str(p[5]), str(p[6]), str(p[7]), str(p[8]), str(p[9]), str(p[10]), str(p[11]), str(p[12]))
-                # cek2 = []
-                # # ==================DB====================
-                # cursor.execute(
-                #     "select * from tb_densitas where kelas=%s" % kelas_densitas)
-                # for id_densitas, kelas_densitas, red1, red2, red3, green1, green2, green3, blue1, blue2, blue3, entropy, contrast, energy, homogeneity in cursor.fetchall():
-                #     cek2.append([kelas_densitas, red1, red2, red3, green1, green2, green3,
-                #                  blue1, blue2, blue3, entropy, contrast, energy, homogeneity])
-                # if len(cek2) == 0:
-                #     cursor.execute(
-                #         "insert into tb_densitas (kelas, red1, red2, red3, green1, green2, green3, blue1, blue2, blue3, entropy, contrast, energy, homogeneity) values (%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s,%s)", datas_densitas)
-                # else:
-                #     cursor.execute(
-                #         "update tb_densitas set red1=%s, red2=%s, red3=%s, green1=%s, green2=%s, green3=%s, blue1=%s, blue2=%s, blue3=%s, entropy=%s, contrast=%s, energy=%s, homogeneity=%s where kelas=%s", (
-                #             str(p[0]), str(p[1]), str(p[2]), str(p[3]), str(p[4]), str(p[5]), str(p[6]), str(p[7]), str(p[8]), str(p[9]), str(p[10]), str(p[11]), str(p[12]),  kelas_densitas))
-                # conn.commit()
             # ===================Kelas Pemenang======================
             result = np.array(result)
             res_t = np.transpose(result)
             p_data = np.unique(p_data, return_counts=True)
+
             p_data = p_data[1]/sum(p_data[1])
+
             res = 1
             for i in range(len(res_t)):
                 res *= res_t[i]
             ouput = res*p_data
             wk = max(ouput)
+
             wk = (list(ouput).index(wk)+1)
 
             if wk is se:
@@ -278,13 +283,55 @@ def testing():
             else:
                 prediksi.append((wk, 1))
                 salah += 1
-            # print('wk :', wk, 's : ', se)
+
+            # =============================================
+            if ((wk == 1) and (se == 1)):
+                prediksi1.append(((wk == 1), 0))
+                benar_j += 1
+            if ((wk != 1) and (se == 1)):
+                prediksi1.append(((wk == 1), 1))
+                salah_j += 1
+
+            if ((wk == 2) and (se == 2)):
+                prediksi1.append(((wk == 2), 0))
+                benar_ke += 1
+            if ((wk != 2) and (se == 2)):
+                prediksi1.append(((wk == 2), 1))
+                salah_ke += 1
+
+            if ((wk == 3) and (se == 3)):
+                prediksi1.append(((wk == 3), 0))
+                benar_ku += 1
+            if ((wk != 3) and (se == 3)):
+                prediksi1.append(((wk == 3), 1))
+                salah_ku += 1
+
+            if ((wk == 4) and (se == 4)):
+                prediksi1.append(((wk == 4), 0))
+                benar_l += 1
+            if ((wk != 4) and (se == 4)):
+                prediksi1.append(((wk == 4), 1))
+                salah_l += 1
+
         akurasi = ((benar/(benar+salah))*100)
         error = ((salah/(benar+salah))*100)
         print("Jumlah Benar : ", benar)
         print("Jumlah Salah : ", salah)
         print('akurasi : ', akurasi, '%')
         print('error : ', error, '%')
+
+        print("Jahe yang teridentifikasi : ", benar_j)
+        print("Jahe yang tidak teridentifikasi : ", salah_j)
+        print("Kencur yang teridentifikasi : ", benar_ke)
+        print("Kencur yang tidak teridentifikasi : ", salah_ke)
+        print("Kunyit yang teridentifikasi : ", benar_ku)
+        print("Kunyit yang tidak teridentifikasi : ", salah_ku)
+        print("Lengkuas  yang teridentifikasi : ", benar_l)
+        print("Lengkuas yang tidak teridentifikasi : ", salah_l)
+        cm_benar = ((benar_j+benar_ke+benar_ku+benar_l)/(benar+salah))
+        print("Akurasi CM Benar : ", cm_benar)
+        cm_salah = ((salah_j+salah_ke+salah_ku+salah_l)/(benar+salah))
+        print("Akurasi CM Salah : ", cm_salah)
 
         cursor.execute('select * from tb_data where status = 2')
         result = []
@@ -293,7 +340,7 @@ def testing():
                            blue2, blue3, entropys, contrasts, energys, homogeneitys, target, status))
 
         closedb()
-        return render_template('testing.html', benar=benar, salah=salah, akurasi=akurasi, error=error, result=result, prediksi=prediksi, wk=wk)
+        return render_template('testing.html', benar=benar, salah=salah, akurasi=akurasi, error=error, result=result, prediksi=prediksi, wk=wk, benar_j=benar_j, benar_ke=benar_ke, benar_ku=benar_ku, benar_l=benar_l)
     else:
 
         return render_template('testing.html')
